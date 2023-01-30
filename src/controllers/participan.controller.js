@@ -3,7 +3,7 @@ import { pool } from "../../database/db.js";
 
 export const createUser = async(req,res)=>{
     try {
-        const [rows] = await pool.query("INSERT INTO participant (nombre) VALUES (?)",[req.body.nombre])
+        const [rows] = await pool.query("INSERT INTO participants (name) VALUES (?)",[req.body.name])
         res.send("Successfully created");    
     } catch (error) {
         return res.status(500).json({
@@ -14,7 +14,7 @@ export const createUser = async(req,res)=>{
 
 export const indexUser = async(req,res)=>{
     try{
-        const [index] = await pool.query("SELECT * FROM participant",)
+        const [index] = await pool.query("SELECT * FROM participants",)
         if (index.length<=0)return res.status(404).json({
             message: 'No participants'
         })
@@ -28,7 +28,7 @@ export const indexUser = async(req,res)=>{
 
 export const indexUsers = async (req,res)=>{
     try{
-        const [index] = await pool.query("SELECT * FROM participant WHERE id = ?",[req.params.id])
+        const [index] = await pool.query("SELECT * FROM participants WHERE id = ?",[req.params.id])
         if (index.length<=0)return res.status(404).json({
             message: 'Participant not found'
         })
@@ -43,7 +43,7 @@ export const indexUsers = async (req,res)=>{
 
 export const updateUsers = async (req,res)=>{
     try {
-        const [resul] = await pool.query("UPDATE participant SET  name=IFNULL(?,name) WHERE id = ?",[req.body.name,req.params.id])
+        const [resul] = await pool.query("UPDATE participants SET  name=IFNULL(?,name) WHERE id = ?",[req.body.name,req.params.id])
         res.send("updated correctly")
     } catch (error) {
         return res.status(500).json({
@@ -54,7 +54,7 @@ export const updateUsers = async (req,res)=>{
 
 export const deleteUser= async (req,res)=>{
     try{
-        const [result] = await pool.query('DELETE FROM participant WHERE id = ?',[req.params.id])
+        const [result] = await pool.query('DELETE FROM participants WHERE id = ?',[req.params.id])
         if(result.affectedRows<=0)return res.status(404).json({
             message:'participant not found'
         })

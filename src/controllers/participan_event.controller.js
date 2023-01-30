@@ -3,8 +3,6 @@ import { pool } from "../../database/db.js";
 export const festivalPaticipant = async(req,res) =>{
     try {
         const {participant,evento} = req.body;
-        console.log(evento)
-        console.log(participant)
         const event = await pool.query("INSERT INTO participant_festivals (idFestival,idParticipant) VALUES (?,?)",[evento,participant])
         res.send("successfully");
     } catch (error) {
@@ -17,10 +15,16 @@ export const festivalPaticipant = async(req,res) =>{
 export const participanOfEvent = async(req,res)=>{
     try{
         const {event} = req.body
-        const [index] = await pool.query("SELECT participant.nombre FROM participant INNER JOIN participant_festivals ON participant_festivals.idParticipant = participant.id INNER JOIN festivals ON festivals.id = participant_festivals.idFestival WHERE festivals.title = (?)",[event])
-        if (index.length<=0)return res.status(404).json({
-            message: 'No Participants'
-        })
+        const [existe] = await pool.query("SELECT * FROM festivals WHERE = (?)",[event])
+        if(existe.length)return res.status(404).json({message: 'event not found'})
+        
+        // const [index] = await pool.query("SELECT participants.name FROM participants INNER JOIN participant_festivals ON participant_festivals.idParticipant = participants.id INNER JOIN festivals ON festivals.id = participant_festivals.idFestival WHERE festivals.title = (?)",[event])
+
+        // if (index.length<=0) {return res.status(404 ).json({
+            
+            
+        //     })
+        // }
         res.send({index});
     }catch(error){
         return res.status(500).json({

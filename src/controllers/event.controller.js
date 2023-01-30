@@ -1,73 +1,73 @@
-import {pool} from "../../database/db.js"
+import Event from "../models/event.model.js";
 
-export const createEvent = async(req,res)=>{
-    try {
-        const {title,description,start_date,end_date} = req.body;
-        const [rows] = await pool.query("INSERT INTO festivals (title,description,start_date,end_date) VALUES (?,?,?,?)",[title,description,start_date,end_date])
-        res.send("Successfully created");    
-    } catch (error) {
-        return res.status(500).json({
-            message:'ERROR'
-        })
-    }   
-}
+const evento = new Event();
 
-export const indexEvent = async(req,res)=>{
-    try{
-        const [index] = await pool.query("SELECT * FROM festivals",)
-        if (index.length<=0)return res.status(404).json({
-            message: 'No Events'
-        })
-        res.send({index});
-    }catch(error){
-        return res.status(500).json({
-            message:'ERROR'
-        })
+class eventController {
+    createEvent = async(req,res)=>{
+        try {
+            const prueba = await evento.create(req,res);
+            if (prueba=="myException")
+                {
+                    throw "error"; 
+                }
+            res.send("Successfully created addd");   
+        } catch (error) {
+            res.status(500).json({
+                message:'ERROR Controller'
+            })
+            return 
+        }   
+    }
+
+    indexEvent = async(req,res)=>{
+        try{
+            const result = await evento.index(req,res);
+            res.send(result);
+        }catch(error){
+            res.status(500).json({
+                message:'ERROR'
+            })
+            return 
+        }
+    }
+    
+    indexEvents = async (req,res)=>{
+        try{
+            const result = await evento.indexOne(req,res);
+            res.send(result);
+    
+        }catch(error){
+            res.status(500).json({
+                message:'ERROR'
+            })
+            return 
+        }
+    }
+    
+    updateEvent = async (req,res)=>{
+        try {
+            await evento.update(req,res);
+            res.send("updated correctly")
+        } catch (error) {
+             res.status(500).json({
+                message:'ERROR'
+            })
+            return 
+        }
+    }
+    
+    deleteEvent= async (req,res)=>{
+        try{
+            await evento.delete(req,res);
+            res.send("Correctly eliminated")
+            return 
+        }catch(error){
+             res.status(500).json({
+                message:'Event not found'
+            })
+            return
+        }
     }
 }
 
-export const indexEvents = async (req,res)=>{
-    try{
-        const [index] = await pool.query("SELECT * FROM festivals WHERE id = ?",[req.params.id])
-        if (index.length<=0)return res.status(404).json({
-            message: 'Event not found'
-        })
-        res.send({index})
-
-    }catch(error){
-        return res.status(500).json({
-            message:'ERROR'
-        })
-    }
-}
-
-export const updateEvent = async (req,res)=>{
-    try {
-        const {id} = req.params.id;
-        const {title,description,start_date,end_date} = req.body;
-        console.log(req.body);
-        console.log(req.params.id);
-        const [result] = await pool.query("UPDATE festivals SET title=IFNULL(?,title), description=IFNULL(?,description), start_date=IFNULL(?,start_date), end_date=IFNULL(?,end_date) WHERE id = ?",[title,description,start_date,end_date, id]);
-        if(result.affectedRows === 0) return res.send("no funciono")
-        res.send("updated correctly")
-    } catch (error) {
-        return res.status(500).json({
-            message:'ERROR'
-        })
-    }
-}
-
-export const deleteEvent= async (req,res)=>{
-    try{
-        const [result] = await pool.query('DELETE FROM festivals WHERE id = ?',[req.params.id])
-        if(result.affectedRows<=0)return res.status(404).json({
-            message:'Event not found'
-        })
-        res.send("Correctly eliminated")
-
-    }catch(error){
-        return res.status(500).json({
-            message:'Event not found'
-        })
-    }
-}
+export default eventController
