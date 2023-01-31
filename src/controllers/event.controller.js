@@ -43,31 +43,94 @@ class eventController {
             return 
         }
     }
-    
-    updateEvent = async (req,res)=>{
-        try {
-            await evento.update(req,res);
-            res.send("updated correctly")
-        } catch (error) {
-             res.status(500).json({
-                message:'ERROR'
-            })
-            return 
-        }
-    }
-    
-    deleteEvent= async (req,res)=>{
+
+    titleEvent = async (req,res) =>{
         try{
-            await evento.delete(req,res);
-            res.send("Correctly eliminated")
-            return 
+            const result = await evento.titleEvent(req,res);
+            if(result <= 0 ) return res.send("Event not found")
+            res.send(result);
+    
         }catch(error){
-             res.status(500).json({
-                message:'Event not found'
+            res.status(500).json({
+                message:error.message
             })
-            return
+            return 
         }
     }
-}
+
+    longerDate = async(req,res)=>{
+        try{
+            const index = await evento.longerDate(req,res)
+            if (index<=0)return res.status(404).json({
+                message: 'No Events'
+            })
+            
+            res.send(index);
+            
+        }catch(error){
+            return res.send(error.message);
+        }
+    }
+    
+    lowerDate = async(req,res)=>{
+        try{
+            
+            const index = await evento.lowerDate(req,res)
+            if (index<=0)return res.status(404).json({
+                message: 'No Events'
+            })
+            res.send(index);
+        }catch(error){
+            return res.send(error.message);
+        }
+    }
+    
+    betweenDates = async(req,res)=>{
+        try{
+            const index = await evento.betweenDates(req,res)
+            if (index <=0)return res.status(404).json({
+                message: 'No Events'
+            })
+            res.send(index);
+        }catch(error){
+            return res.send(error.message);
+        }
+    }
+    yearEvent = async (req, res) => {
+        try{
+            const [year] = await evento.yearDate(req,res)
+            if (year <= 0) return res.status(404).json({
+                message:"No Events"
+            })
+            res.send({year});
+        }catch(error){
+           res.send(error.message)
+        }
+    }
+
+    monthEvent = async (req,res)=>{
+        try{
+            const [month] = await evento.monthDate(req,res);
+            if (month <= 0)return res.status(404).json({
+                message:"No Events"
+            })
+            res.send(month);
+        }catch(error){
+            res.send(error.message)
+        }
+    }
+
+    dayEvent = async (req,res) => {
+        try{
+            const [day] = await evento.dayDate(req,res)
+            if (day <= 0) return res.status(404).json({
+                message:"No events"
+            })
+            res.send({day});
+        }catch(error){
+            res.send(error.message )
+        }
+    }
+} 
 
 export default eventController

@@ -1,13 +1,14 @@
 import { Router } from "express";
-import { createUser,indexUser,indexUsers,deleteUser,updateUsers } from "../controllers/participan.controller.js";
+import ParticipantController from "../controllers/participan.controller.js";
 
 
 const router = Router()
+const controller = new ParticipantController;
 
-router.get('/participant', indexUser )
-router.get('/participant/:id', indexUsers )
-router.post('/participant', createUser)
-router.put('/participant/:id', updateUsers)
-router.delete('/participant/:id', deleteUser)
+router.get('/participant', controller.indexUser )
+router.get('/participant/:id', controller.indexUsers )
+router.post('/participant', controller.createUser)
+router.put('/participant/:id', controller.updateUsers)
+router.delete('/participant/:id', controller.deleteUser)
 
 export default router   

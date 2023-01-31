@@ -2,74 +2,72 @@ import { pool } from "../../database/db.js";
 
 export class Event {
 
-    create = async(req,res)=>{
-        try {
+    create = async(req,_)=>{
+        
             const {title,start_date,end_date,description} = req.body;
             const [rows] = await pool.query("INSERT INTO festivals (title,start_date,end_date,description) VALUES (?,?,?,?)",[title,start_date,end_date,description])
             return   
-        } catch (error) {
-            return "myException";
-        }   
+    
     }
 
-    index = async(req,res)=>{
-        try{
+    index = async(_,res)=>{
+        
             const [index] = await pool.query("SELECT * FROM festivals")
-            if (index.length<=0)return res.status(404).json({
-                message: 'No Events'
-            })
             return ({index});
-        }catch(error){
-            return res.status(500).json({
-                message:'ERROR'
-            })
-        }
     }
 
     indexOne = async (req,res)=>{
-        try{
+        
             const [index] = await pool.query("SELECT * FROM festivals WHERE id = ?",[req.params.id])
-            if (index.length<=0)return res.status(404).json({
-                message: 'Event not found'
-            })
-            res.send({index})
+            return ({index})
 
-        }catch(error){
-            return res.status(500).json({
-                message:'ERROR'
-            })
-        }
+    }
+    titleEvent = async (req,res)=>{
+        
+            const [index] = await pool.query("SELECT * FROM festivals WHERE title = ?",[req.body.title])
+            return (index)
     }
 
-    update = async (req,res)=>{
-        try {
-            const {id} = req.params.id;
-            const {title,description,start_date,end_date} = req.body;
-            console.log(req.body);
-            console.log(req.params.id);
-            const [result] = await pool.query("UPDATE festivals SET title=IFNULL(?,title), description=IFNULL(?,description), start_date=IFNULL(?,start_date), end_date=IFNULL(?,end_date) WHERE id = ?",[title,description,start_date,end_date, id]);
-            if(result.affectedRows === 0) return res.send("no funciono")
-            res.send("updated correctly")
-        } catch (error) {
-            return res.status(500).json({
-                message:'ERROR'
-            })
+    
+    longerDate = async(req,res)=>{
+        
+                const [index] = await pool.query("SELECT * FROM festivals WHERE festivals.start_date > (?)",[req.body.date])
+                
+                return index;
         }
-    }
+        
+        lowerDate = async(req,res)=>{
+        
+                
+                const [index] = await pool.query("SELECT * FROM festivals WHERE festivals.start_date < (?)",[req.body.date])
 
-    delete = async (req,res)=>{
-        try{
-            const [result] = await pool.query('DELETE FROM festivals WHERE id = ?',[req.params.id])
-            if(result.affectedRows<=0)return res.status(404).json({
-                message:'Event not found'
-            })
-            res.send("Correctly eliminated")
-
-        }catch(error){
-            return res.status(500).json({
-                message:'Event not found'
-            })
+                return index;
         }
-    }
+        
+        betweenDates = async(req,res)=>{
+        
+                const {start_date,end_date} = req.body;
+                const [index] = await pool.query("SELECT * FROM festivals WHERE festivals.start_date BETWEEN (?) AND (?)",[start_date,end_date])
+                console.log(req.body)
+                return index;
+        }
+
+        yearDate = async (req,res)=>{
+                const {year} = req.body;
+                const index = await pool.query("SELECT * FROM festivals WHERE year(start_date) = (?)",[year])
+                return index;
+        }
+
+        monthDate = async (req,res)=>{
+                const {month} = req.body;
+                const index = await pool.query("SELECT * FROM festivals WHERE month(start_date) = (?)",[month])
+                return index;
+        }
+
+        dayDate = async (req,res)=>{
+                const {day} = req.body;
+                const index = await pool.query("SELECT * FROM festivals WHERE day(start_date) = (?)",[day])
+                return index;
+        }
 }
 export default Event
