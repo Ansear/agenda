@@ -7,7 +7,7 @@ import bodyParser from "body-parser";
 const app = express();
 
 app.listen(4001);
-app.use(bodyParser.json());
+app.use(bodyParser.json()); 
 app.use(participant);
 app.use(event)
 app.use(festivalPaticipant)
