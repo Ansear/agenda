@@ -18,7 +18,7 @@ export class Event {
             if (index.length<=0)return res.status(404).json({
                 message: 'No Events'
             })
-            res.send({index});
+            return ({index});
         }catch(error){
             return res.status(500).json({
                 message:'ERROR'

@@ -10,4 +10,4 @@ router.post('/participant', createUser)
 router.put('/participant/:id', updateUsers)
 router.delete('/participant/:id', deleteUser)
 
-export default router
+export default router   
